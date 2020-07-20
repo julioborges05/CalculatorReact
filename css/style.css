@@ -3,6 +3,7 @@
     --bg_display: #3d4eee;
     --bg_button: #ffffff;
     --bg_button_hover: #fa5d5d;
+    --font_history: #A2A3A2;
 }
 
 body{
@@ -20,6 +21,14 @@ body{
     padding: 0px 10px 10px 10px;
 }
 
+#exp{
+    padding: 4px;;
+    float: right;
+    font-size: 13pt;
+    text-align: right;
+    color: var(--font_history);
+}
+
 #display{
     height: 50px;
     font-size: 48px;
@@ -35,7 +44,7 @@ body{
 }
 
 #zero{
-    width: 74%;
+    width: 49%;
     height: 50px;
     float: left;
     margin: 2px;
@@ -54,6 +63,7 @@ button{
     background-color: var(--bg_button);
     border: none;
     position: relative;
+    font-size: 12pt;
 }
 
 button:hover{

@@ -1,25 +1,40 @@
-let valueNumber = "";
+let valueNumber = "0";
+let expression = "";
 
-function Back() {
+function AppComponent() {
     const [num, alternum] = React.useState(0);
+    const [exp, alterexp] = React.useState(expression);
+
+    const alterExp = function (){
+        alterexp(expression);
+        alternum("0");
+        valueNumber = "0";
+    }
 
     const mudaValor = function (){
         alternum(valueNumber);
     }
 
-
     return(
         <div id="back">
-            <Display num={parseInt(num)}/>
-            <Button muda={mudaValor}/>
+            <History exp={exp}/>
+            <Display num={parseFloat(num)}/>
+            <Button muda={mudaValor} exp={alterExp}/>
         </div>
     )   
 }
 
-function Display(props){
-    React.useEffect(function(){
+function History(props){
+    React.useEffect(function(){});
+    return(
+        <div id="exp">
+            {props.exp}
+        </div>
+    )
+}
 
-    });
+function Display(props){
+    React.useEffect(function(){});
     return(
         <div id="display">
             <p>{props.num}</p>
@@ -32,7 +47,7 @@ function Button(props){
         <React.Fragment>
             <button className="button" onClick = {() => {valueNumber = "0"; props.muda()}}>CE</button>
             <button className="button" onClick = {() => {valueNumber = "0"; props.muda()}}>C</button>
-            <button className="button">/</button>
+            <button className="button" onClick = {() => {expression = valueNumber + " / "; props.exp()}}>/</button>
             <button className="button">X</button>
             <button className="button" onClick = {() => {valueNumber += "7"; props.muda()}}>7</button>
             <button className="button" onClick = {() => {valueNumber += "8"; props.muda()}}>8</button>
@@ -47,14 +62,7 @@ function Button(props){
             <button className="button" onClick = {() => {valueNumber += "3"; props.muda()}}>3</button>
             <button id="equal">=</button>
             <button id="zero" onClick = {() => {valueNumber += "0"; props.muda()}}>0</button>
-        </React.Fragment>
-    )
-}
-
-function AppComponent() {
-    return(
-        <React.Fragment>
-            <Back />
+            <button className="button" onClick = {() => {valueNumber += "."; props.muda()}}>.</button>
         </React.Fragment>
     )
 }
