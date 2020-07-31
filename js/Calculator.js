@@ -5,6 +5,8 @@ let operator = "";
 let lastOperator = "";
 let result;
 
+const valorBotao = ['CE', 'C', '/', 'X', 7, 8, 9, '-', 4, 5, 6, '+', 1, 2, 3, '=', 0, '.'];
+
 function AppComponent() {
     let [num, alternum] = React.useState(0);
     let [exp, alterExp] = React.useState("");
@@ -41,8 +43,6 @@ function AppComponent() {
             alternum(0);
         }
 
-        //console.log(num);
-
         valueNumber = "";
     }
 
@@ -50,9 +50,28 @@ function AppComponent() {
         <div id="back">
             <History exp={exp}/>
             <Display num={parseFloat(num)}/>
-            <Button alter={alterValue} alterE={alterExpression}/>
+            <ButtonArray />
         </div>
     )   
+}
+
+function ButtonArray(){
+    const nameButton = ["CE", "C", "<<<", "/", 7, 8, 9, "X", 4, 5, 6, "-", 1, 2, 3, "+", "+/-", 0, ".", "="];
+
+    const listButton = nameButton.map((nameButton) =>
+        <button className="button">{nameButton}</button>
+    );
+    return(
+        <React.Fragment>
+            {listButton}
+        </React.Fragment>
+    )
+}
+
+function alterCalc (value){
+    let num;
+
+    return(num);
 }
 
 function History(props){
