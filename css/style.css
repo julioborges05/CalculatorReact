@@ -43,20 +43,6 @@ body{
     margin: 2px;
 }
 
-#zero{
-    width: 49%;
-    height: 50px;
-    float: left;
-    margin: 2px;
-}
-
-#equal{
-    width: 24%;
-    height: 104px;
-    float: right;
-    margin: 2px;
-}
-
 button{
     width: 100%;
     height: 100%;

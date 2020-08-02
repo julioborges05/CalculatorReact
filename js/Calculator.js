@@ -1,72 +1,127 @@
 let valueNumber = "";
-let expression = "";
-let comand = "";
-let result = 0;
-let value1, value2;
-let count = 1;
+let newValue = "";
+let arrayValues = [];
+let calc;
+let result;
+let expression;
 
 function AppComponent() {
-    const [num, alternum] = React.useState(0);
-    const [exp, alterexp] = React.useState(expression);
+    let [num, alternum] = React.useState(0);
+    let [exp, alterexp] = React.useState("");
 
-    const alterExp = function (){
-        if(count == 1){
-            value1 = parseFloat(valueNumber);
-            count++;
-        }else{
-            value2 = parseFloat(valueNumber);
-            count--;
+    const alter = (value) =>{
+        if(typeof(1) != typeof(value)){
+            switch(value){
+                case 'CE':
+                    valueNumber = "";
+                    alternum(0);
+                    break;
+                case 'C':
+                    arrayValues = [];
+                    valueNumber = "";
+                    alterexp("");
+                    alternum(0);
+                    break;
+                case '<<<':
+                    newValue = "";
+                    for(let i = 0; i < valueNumber.length-1; i++){
+                        newValue += valueNumber[i];
+                    }
+                    valueNumber = newValue;
+                    "" == valueNumber ? (valueNumber = 0) : "";
+                    alternum(parseFloat(valueNumber));
+                    break;
+                case '/':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " / ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "div";
+                    break;
+                case 'X':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " X ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "mult";
+                    break;
+                case '-':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " - ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "sub";
+                    break;
+                case '+':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " + ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "sum";
+                    break;
+                case '+/-':
+                    valueNumber = parseFloat(valueNumber) * (-1);
+                    alternum(valueNumber);
+                    break;
+                case '.':
+                    0 == valueNumber ? (valueNumber = "0.") : valueNumber += value + "";
+                    alternum(valueNumber);
+                    break;
+                case '=':
+                    arrayValues[1] = parseFloat(valueNumber);
+
+                    if(0 == valueNumber && "div" == calc){
+                        console.log("Divisão por 0");
+                        alternum("Impossivel dividir");
+                        break;
+                    }
+
+                    alterexp(expression + arrayValues[1] + " =");
+
+                    "sum" == calc ? (result = sum(arrayValues[0], arrayValues[1])) :
+                        "sub" == calc ? (result = sub(arrayValues[0], arrayValues[1])):
+                            "mult" == calc ? (result = mult(arrayValues[0], arrayValues[1])):
+                                "div" == calc ? (result = div(arrayValues[0], arrayValues[1])):
+                                    console.log("Aconteceu um erro");
+
+                    alternum(parseFloat(result));
+                    valueNumber = 0;
+                    arrayValues = [];
+                    break;
+            }
+        } else {
+            valueNumber += value + "";
+            alternum(parseFloat(valueNumber));
         }
 
 
-        if(expression[expression.length-1] == "="){
-            if(comand == "mult"){
-                alternum(0);
-                result = mult(value1, value2);
-                alternum(result);
-            } else if(comand == "div"){
-                alternum(0);
-                result = divi(value1, value2);
-                alternum(result);
-            } else if(comand == "sum"){
-                alternum(0);
-                result = sum(value1, value2);
-                alternum(result);
-            } else if(comand == "sub"){
-                alternum(0);
-                result = sub(value1, value2);
-                alternum(result);
-            }
-        }else{
-            if(expression[expression.length-2] == "/"){
-                //console.log("DIVISÃO");
-                comand = "div";
-            }else if(expression[expression.length-2] == "X"){
-                comand = "mult";
-            }else if(expression[expression.length-2] == "+"){
-                comand = "sum";
-            }else if(expression[expression.length-2] == "-"){
-                comand = "sub";
-            }
-            alternum("0");
-        }
-
-
-        alterexp(expression);
-        valueNumber = "";
-    }
-
-    const mudaValor = function (){
-        alternum(parseFloat(valueNumber));
+        console.log(arrayValues);
     }
 
     return(
         <div id="back">
             <History exp={exp}/>
-            <Display num={parseFloat(num)}/>
-            <Button muda={mudaValor} exp={alterExp}/>
+            <Display num={num}/>
+            <ButtonArray alter={alter}/>
         </div>
     )   
+}
+
+function ButtonArray(props){
+    const nameButton = ["CE", "C", "<<<", "/",
+                        7, 8, 9, "X", 
+                        4, 5, 6, "-", 
+                        1, 2, 3, "+", 
+                        "+/-", 0, ".", "="];
+
+    const listButton = nameButton.map((nameButton) =>
+        <button className="button" onClick = {() => {props.alter(nameButton)}}>{nameButton}</button>
+    );
+    return(
+        <React.Fragment>
+            {listButton}
+        </React.Fragment>
+    )
 }
 
 function History(props){
@@ -84,31 +139,6 @@ function Display(props){
         <div id="display">
             <p>{props.num}</p>
         </div>
-    )
-}
-
-function Button(props){
-    return(
-        <React.Fragment>
-            <button className="button" onClick = {() => {valueNumber = "0"; props.muda()}}>CE</button>
-            <button className="button" onClick = {() => {expression = ""; props.exp()}}>C</button>
-            <button className="button" onClick = {() => {expression = valueNumber + " / "; props.exp()}}>/</button>
-            <button className="button" onClick = {() => {expression = valueNumber + " X "; props.exp()}}>X</button>
-            <button className="button" onClick = {() => {valueNumber += "7"; props.muda()}}>7</button>
-            <button className="button" onClick = {() => {valueNumber += "8"; props.muda()}}>8</button>
-            <button className="button" onClick = {() => {valueNumber += "9"; props.muda()}}>9</button>
-            <button className="button" onClick = {() => {expression = valueNumber + " - "; props.exp()}}>-</button>
-            <button className="button" onClick = {() => {valueNumber += "4"; props.muda()}}>4</button>
-            <button className="button" onClick = {() => {valueNumber += "5"; props.muda()}}>5</button>
-            <button className="button" onClick = {() => {valueNumber += "6"; props.muda()}}>6</button>
-            <button className="button" onClick = {() => {expression = valueNumber + " + "; props.exp()}}>+</button>
-            <button className="button" onClick = {() => {valueNumber += "1"; props.muda()}}>1</button>
-            <button className="button" onClick = {() => {valueNumber += "2"; props.muda()}}>2</button>
-            <button className="button" onClick = {() => {valueNumber += "3"; props.muda()}}>3</button>
-            <button id="equal" onClick = {() => {expression += valueNumber + " ="; props.exp()}}>=</button>
-            <button id="zero" onClick = {() => {valueNumber += "0"; props.muda()}}>0</button>
-            <button className="button" onClick = {() => {valueNumber += "."; props.muda()}}>.</button>
-        </React.Fragment>
     )
 }
 

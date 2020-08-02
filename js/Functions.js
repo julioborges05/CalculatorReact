@@ -10,6 +10,6 @@ mult = (val1, val2) => {
     return (val1 * val2);
 }
 
-divi = (val1, val2) => {
+div = (val1, val2) => {
     return (val1 / val2);
 }
