@@ -1,77 +1,127 @@
 let valueNumber = "";
-let values = [];
-let index = 0;
-let operator = "";
-let lastOperator = "";
+let newValue = "";
+let arrayValues = [];
+let calc;
 let result;
-
-const valorBotao = ['CE', 'C', '/', 'X', 7, 8, 9, '-', 4, 5, 6, '+', 1, 2, 3, '=', 0, '.'];
+let expression;
 
 function AppComponent() {
     let [num, alternum] = React.useState(0);
-    let [exp, alterExp] = React.useState("");
+    let [exp, alterexp] = React.useState("");
 
-    const alterValue = function(){
-        alternum(parseFloat(valueNumber));
-        values[index] = parseFloat(valueNumber);
-        console.log(values);
-    }
+    const alter = (value) =>{
+        if(typeof(1) != typeof(value)){
+            switch(value){
+                case 'CE':
+                    valueNumber = "";
+                    alternum(0);
+                    break;
+                case 'C':
+                    arrayValues = [];
+                    valueNumber = "";
+                    alterexp("");
+                    alternum(0);
+                    break;
+                case '<<<':
+                    newValue = "";
+                    for(let i = 0; i < valueNumber.length-1; i++){
+                        newValue += valueNumber[i];
+                    }
+                    valueNumber = newValue;
+                    "" == valueNumber ? (valueNumber = 0) : "";
+                    alternum(parseFloat(valueNumber));
+                    break;
+                case '/':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " / ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "div";
+                    break;
+                case 'X':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " X ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "mult";
+                    break;
+                case '-':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " - ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "sub";
+                    break;
+                case '+':
+                    arrayValues[0] = parseFloat(valueNumber);
+                    expression = arrayValues[0] + " + ";
+                    alterexp(expression);
+                    valueNumber = 0;
+                    calc = "sum";
+                    break;
+                case '+/-':
+                    valueNumber = parseFloat(valueNumber) * (-1);
+                    alternum(valueNumber);
+                    break;
+                case '.':
+                    0 == valueNumber ? (valueNumber = "0.") : valueNumber += value + "";
+                    alternum(valueNumber);
+                    break;
+                case '=':
+                    arrayValues[1] = parseFloat(valueNumber);
 
-    const alterExpression = function(){
-        "C" != operator ? alterExp(values[index] + operator) : alterExp("");
-        "" == exp ? (0 == index ? index++ : index--): index = 0;
+                    if(0 == valueNumber && "div" == calc){
+                        console.log("Divisão por 0");
+                        alternum("Impossivel dividir");
+                        break;
+                    }
 
-        if ("=" == operator){
-            if ("/" == lastOperator){
-                result = div(values[0], values[1]);
-                alterExp(values[0] + "/" + values[1] + "=");
-                alternum(parseFloat(result));
-            } else if ("X" == lastOperator){
-                result = mult(values[0], values[1]);
-                alterExp(values[0] + "X" + values[1] + "=");
-                alternum(parseFloat(result));
-            } else if ("-" == lastOperator){
-                result = sub(values[0], values[1]);
-                alterExp(values[0] + "-" + values[1] + "=");
-                alternum(parseFloat(result));
-            } else if ("+" == lastOperator){
-                result = sum(values[0], values[1]);
-                alterExp(values[0] + "+" + values[1] + "=");
-                alternum(parseFloat(result));
+                    alterexp(expression + arrayValues[1] + " =");
+
+                    "sum" == calc ? (result = sum(arrayValues[0], arrayValues[1])) :
+                        "sub" == calc ? (result = sub(arrayValues[0], arrayValues[1])):
+                            "mult" == calc ? (result = mult(arrayValues[0], arrayValues[1])):
+                                "div" == calc ? (result = div(arrayValues[0], arrayValues[1])):
+                                    console.log("Aconteceu um erro");
+
+                    alternum(parseFloat(result));
+                    valueNumber = 0;
+                    arrayValues = [];
+                    break;
             }
         } else {
-            alternum(0);
+            valueNumber += value + "";
+            alternum(parseFloat(valueNumber));
         }
 
-        valueNumber = "";
+
+        console.log(arrayValues);
     }
 
     return(
         <div id="back">
             <History exp={exp}/>
-            <Display num={parseFloat(num)}/>
-            <ButtonArray />
+            <Display num={num}/>
+            <ButtonArray alter={alter}/>
         </div>
     )   
 }
 
-function ButtonArray(){
-    const nameButton = ["CE", "C", "<<<", "/", 7, 8, 9, "X", 4, 5, 6, "-", 1, 2, 3, "+", "+/-", 0, ".", "="];
+function ButtonArray(props){
+    const nameButton = ["CE", "C", "<<<", "/",
+                        7, 8, 9, "X", 
+                        4, 5, 6, "-", 
+                        1, 2, 3, "+", 
+                        "+/-", 0, ".", "="];
 
     const listButton = nameButton.map((nameButton) =>
-        <button className="button">{nameButton}</button>
+        <button className="button" onClick = {() => {props.alter(nameButton)}}>{nameButton}</button>
     );
     return(
         <React.Fragment>
             {listButton}
         </React.Fragment>
     )
-}
-
-function alterCalc (value){
-    let num;
-
-    return(num);
 }
 
 function History(props){
@@ -89,31 +139,6 @@ function Display(props){
         <div id="display">
             <p>{props.num}</p>
         </div>
-    )
-}
-
-function Button(props){
-    return(
-        <React.Fragment>
-            <button className="button" onClick = {() => {valueNumber = "0"; props.alter()}}>CE</button>
-            <button className="button" onClick = {() => {valueNumber = "0"; operator="C"; values = []; index = 0; props.alter(); props.alterE()}}>C</button>
-            <button className="button" onClick = {() => {operator = "/"; props.alterE()}}>/</button>
-            <button className="button" onClick = {() => {operator = "X"; props.alterE()}}>X</button>
-            <button className="button" onClick = {() => {valueNumber += "7"; props.alter()}}>7</button>
-            <button className="button" onClick = {() => {valueNumber += "8"; props.alter()}}>8</button>
-            <button className="button" onClick = {() => {valueNumber += "9"; props.alter()}}>9</button>
-            <button className="button" onClick = {() => {operator = "-"; props.alterE()}}>-</button>
-            <button className="button" onClick = {() => {valueNumber += "4"; props.alter()}}>4</button>
-            <button className="button" onClick = {() => {valueNumber += "5"; props.alter()}}>5</button>
-            <button className="button" onClick = {() => {valueNumber += "6"; props.alter()}}>6</button>
-            <button className="button" onClick = {() => {operator = "+"; props.alterE()}}>+</button>
-            <button className="button" onClick = {() => {valueNumber += "1"; props.alter()}}>1</button>
-            <button className="button" onClick = {() => {valueNumber += "2"; props.alter()}}>2</button>
-            <button className="button" onClick = {() => {valueNumber += "3"; props.alter()}}>3</button>
-            <button id="equal" onClick = {() => {lastOperator = operator; operator = "="; props.alterE()}}>=</button>
-            <button id="zero" onClick = {() => {valueNumber += "0"; props.alter()}}>0</button>
-            <button className="button" onClick = {() => {valueNumber += "."; props.alter()}}>.</button>
-        </React.Fragment>
     )
 }
 
