@@ -32,32 +32,20 @@ function AppComponent() {
                     alternum(parseFloat(valueNumber));
                     break;
                 case '/':
-                    arrayValues[0] = parseFloat(valueNumber);
-                    expression = arrayValues[0] + " / ";
+                    receiverValue('/');
                     alterexp(expression);
-                    valueNumber = 0;
-                    calc = "div";
                     break;
                 case 'X':
-                    arrayValues[0] = parseFloat(valueNumber);
-                    expression = arrayValues[0] + " X ";
+                    receiverValue('X');
                     alterexp(expression);
-                    valueNumber = 0;
-                    calc = "mult";
                     break;
                 case '-':
-                    arrayValues[0] = parseFloat(valueNumber);
-                    expression = arrayValues[0] + " - ";
+                    receiverValue('-');
                     alterexp(expression);
-                    valueNumber = 0;
-                    calc = "sub";
                     break;
                 case '+':
-                    arrayValues[0] = parseFloat(valueNumber);
-                    expression = arrayValues[0] + " + ";
+                    receiverValue('+');
                     alterexp(expression);
-                    valueNumber = 0;
-                    calc = "sum";
                     break;
                 case '+/-':
                     valueNumber = parseFloat(valueNumber) * (-1);
