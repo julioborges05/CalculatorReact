@@ -18,7 +18,7 @@ function AppComponent() {
                     break;
                 case 'C':
                     arrayValues = [];
-                    valueNumber = "";
+                    valueNumber = ""; //cabeca de porco
                     alterexp("");
                     alternum(0);
                     break;
